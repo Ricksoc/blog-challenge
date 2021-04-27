@@ -3,6 +3,7 @@
 const express = require("express");
 const ejs = require("ejs");
 const app = express();
+const lodash = require("lodash");
 
 app.set("view engine", "ejs");
 
@@ -41,6 +42,16 @@ app.post("/compose", function (req, res) {
   const post = { postTitle: req.body.postTitle, postBody: req.body.postText };
   posts.push(post);
   res.redirect("/");
+});
+
+app.get("/posts/:title", function (req, res) {
+  const requestedTitle = lodash.lowerCase(req.params.title);
+
+  posts.forEach((post) => {
+    if (lodash.lowerCase(post.postTitle) === requestedTitle) {
+      res.render("post", { post: post });
+    }
+  });
 });
 
 app.listen(3000, function () {
